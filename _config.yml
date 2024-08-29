@@ -1,0 +1,5 @@
+title: Isak Ladegaard's Portfolio
+description: A showcase of my work and projects.
+baseurl: "" # leave this empty unless you have a subpath
+url: "https://isakladegaard.github.io" # your site's URL
+theme: minima # you can start with the minima theme
