@@ -6,8 +6,8 @@
 /* Dark Theme Body Styling */
 body {
     font-family: 'Inter', sans-serif;
-    background-color: #f2f2f2; /* Dark background */
-    color: #3A3B3C; /* Light text for contrast */
+    background-color: #f2f2f2; /* light background */
+    color: #0e1424; /* drk text for contrast */
     margin: 0;
     padding: 0;
 }
