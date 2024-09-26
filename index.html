@@ -32,6 +32,17 @@
         .grid-item:active img {
             transform: scale(1.05);
         }
+
+        /* Mobile view adjustments */
+        @media (max-width: 768px) {
+            .grid-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .grid-item {
+                margin-bottom: 20px;
+            }
+        }
     </style>
 </head>
 
