@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Isak Ladegaard</title>
+    <link rel="icon" href="images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./styles/sharedStyles2.css">
+
+    <style>
+        .grid-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .grid-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+        }
+
+        /* Hover effect */
+        .grid-item:hover img {
+            transform: scale(1.1);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Optional: Add a slight zoom effect on click */
+        .grid-item:active img {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>ISAK LADEGAARD</h1>
+        <p>Assistant Professor of Sociology, University of Hong Kong</p>
+    </header>
+
+    <main>
+        <section class="grid-gallery">
+            <!-- First row: 3 images -->
+            <div class="grid-item">
+                <a href="./bio.html">
+                    <img src="./images/bio.jpg" alt="Bio">
+                </a>
+            </div>
+            <div class="grid-item">
+                <a href="./opensecrecy.html">
+                    <img src="./images/os4.jpg" alt="Book: Open Secrecy">
+                </a>
+            </div>
+            <div class="grid-item">
+                <a href="https://darkdata.illinois.edu/">
+                    <img src="./images/blu.jpg" alt="Research Image">
+                </a>
+            </div>
+
+            <!-- Second row: 3 more images -->
+            <div class="grid-item">
+                <a href="https://darkdata.illinois.edu/">
+                    <img src="./images/dd6.jpg" alt="Research Image">
+                </a>
+            </div>
+            <div class="grid-item">
+                <a href="./page3.html">
+                    <img src="./images/blucontact.jpg" alt="Research Image">
+                </a>
+            </div>
+            <div class="grid-item">
+                <a href="https://docs.google.com/document/d/1QIH_oeo4L03en20W7QSFafDmNM-ZLffZdZjM8xFiSvI/edit?usp=sharing">
+                    <img src="./images/blucv.jpg" alt="Page 3">
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>
