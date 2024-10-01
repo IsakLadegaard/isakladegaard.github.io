@@ -35,6 +35,7 @@
         .content {
             display: flex;
             align-items: flex-start;
+            flex-wrap: wrap;
         }
         .content img {
             width: 50%; /* Reduce image size to 50% */
@@ -51,6 +52,22 @@
         }
         strong {
             color: #003366; /* Dark blue for emphasis */
+        }
+        
+        /* Media query for mobile devices */
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+            .content img {
+                width: 100%; /* Image takes full width on mobile */
+                margin-right: 0;
+                margin-bottom: 20px; /* Add space between image and text */
+            }
+            .content .text {
+                text-align: center; /* Optional: center text for a more balanced look on mobile */
+            }
         }
     </style>
 </head>
