@@ -1,144 +1,84 @@
-<!DOCTYPE html>
-<html lang="en">
+/* Importing Inter font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
 
-<head>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-34D0Q2Z80V"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
+@import url('https://fonts.googleapis.com/css2?family=Caudex:wght@400;700&display=swap');
 
-        gtag('config', 'G-34D0Q2Z80V');
-    </script>
+/* Dark Theme Body Styling */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f2f2f2; /* light background */
+    color: #0e1424; /* drk text for contrast */
+    margin: 0;
+    padding: 0;
+}
 
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Isak Ladegaard</title>
-    <link rel="icon" href="images/favicon2.ico" type="image/x-icon">
-    <link rel="stylesheet" href="./styles/sharedStyles2.css">
+/* Header Styling */
+header {
+    text-align: center;
+    margin: 40px 0;
+}
 
-    <style>
-        .grid-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
+header h1 {
+    font-size: 2.5rem;
+    color: #0e1424; /* Highlight color for main title */
+}
 
-        .grid-item {
-            position: relative;
-            display: inline-block;
-        }
+header p {
+    font-size: 1.1rem;
+    color: #0e1424; /* Light text for sub-titles */
+}
 
-        .grid-item img {
-            width: 100%;
-            height: auto;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 8px;
-        }
+/* Grid layout for the images and captions - 3 columns per row */
+.grid-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Set exactly 3 columns */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-        /* Tooltip text (covering the image) */
-        .grid-item span {
-            visibility: hidden;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
-            color: #fff;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 8px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            font-family: 'Caudex', serif; /* Apply the Caudex font */
-            font-size: 24px; /* Adjust the font size as needed */
-            padding: 10px; /* Add padding to avoid text touching the edges */
-        }
+.grid-item {
+    text-align: center;
+}
 
-        /* Hover effect for tooltip */
-        .grid-item:hover span {
-            visibility: visible;
-            opacity: 1;
-        }
+.grid-item img {
+    width: 100%;
+    height: auto;
+    object-fit: cover; /* Ensures images cover space properly */
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.6); /* Adds shadow for depth */
+}
 
-        /* Hover effect for image */
-        .grid-item:hover img {
-            transform: scale(1.1);
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
-        }
+.grid-item p {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: #f5f5f5; /* Light text for captions */
+}
 
-        /* Optional: Add a slight zoom effect on click */
-        .grid-item:active img {
-            transform: scale(1.05);
-        }
+/* Add spacing and style for larger screens */
+@media (max-width: 768px) {
+    .grid-gallery {
+        grid-template-columns: repeat(1, 1fr); /* Stack on smaller screens */
+    }
+}
 
-        /* Mobile view adjustments */
-        @media (max-width: 768px) {
-            .grid-gallery {
-                grid-template-columns: 1fr;
-            }
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid-gallery {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on tablets */
+    }
+}
 
-            .grid-item {
-                margin-bottom: 20px;
-            }
-        }
-    </style>
-</head>
+@media (min-width: 1024px) {
+    header {
+        margin-bottom: 60px;
+    }
 
-<body>
-    <header>
-        <h1>ISAK LADEGAARD</h1>
-        <p>ASSISTANT PROFESSOR OF SOCIOLOGY, UNIVERSITY OF HONG KONG</p>
-    </header>
+    .grid-item img {
+        max-height: 300px; /* Limit the height for large images */
+    }
 
-    <main>
-        <section class="grid-gallery">
-            <!-- First row: 3 images -->
-            <div class="grid-item">
-                <a href="./bio.html">
-                    <img src="./images/bio.jpg" alt="Bio">
-                    <span>View Bio</span>
-                </a>
-            </div>
-            <div class="grid-item">
-                <a href="./opensecrecy.html">
-                    <img src="./images/os4.jpg" alt="Book: Open Secrecy">
-                    <span>Open Secrecy Book</span>
-                </a>
-            </div>
-            <div class="grid-item">
-                <a href="https://scholar.google.com/citations?user=JFw_CvcAAAAJ">
-                    <img src="./images/gs.jpg" alt="Research Image">
-                    <span>View Research</span>
-                </a>
-            </div>
-
-            <!-- Second row: 3 more images -->
-            <div class="grid-item">
-                <a href="https://darkdata.illinois.edu/">
-                    <img src="./images/dd.jpg" alt="Research Image">
-                    <span>Dark Data Project</span>
-                </a>
-            </div>
-            <div class="grid-item">
-                <a href="./contact.html">
-                    <img src="./images/contact.jpg" alt="Contact Image">
-                    <span>Contact Info</span>
-                </a>
-            </div>
-            <div class="grid-item">
-                <a href="https://docs.google.com/document/d/1QIH_oeo4L03en20W7QSFafDmNM-ZLffZdZjM8xFiSvI/edit?usp=sharing">
-                    <img src="./images/cv.jpg" alt="CV Image">
-                    <span>Download CV</span>
-                </a>
-            </div>
-        </section>
-    </main>
-</body>
-
-</html>
+    .grid-item p {
+        font-size: 1.2rem;
+    }
+}
