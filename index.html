@@ -18,42 +18,72 @@
     <link rel="icon" href="images/favicon2.ico" type="image/x-icon">
     <link rel="stylesheet" href="./styles/sharedStyles2.css">
 
-    <style>
+
+
+  <style>
+    .grid-gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .grid-item {
+        position: relative;
+        display: inline-block;
+    }
+
+    .grid-item img {
+        width: 100%;
+        height: auto;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 8px;
+    }
+
+    /* Tooltip text */
+    .grid-item span {
+        visibility: hidden;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 10px;
+        position: absolute;
+        z-index: 1;
+        bottom: 110%; /* Position the tooltip above the image */
+        left: 50%;
+        transform: translateX(-50%);
+        white-space: nowrap;
+    }
+
+    /* Hover effect for tooltip */
+    .grid-item:hover span {
+        visibility: visible;
+    }
+
+    /* Hover effect for image */
+    .grid-item:hover img {
+        transform: scale(1.1);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Optional: Add a slight zoom effect on click */
+    .grid-item:active img {
+        transform: scale(1.05);
+    }
+
+    /* Mobile view adjustments */
+    @media (max-width: 768px) {
         .grid-gallery {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            grid-template-columns: 1fr;
         }
 
-        .grid-item img {
-            width: 100%;
-            height: auto;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 8px;
+        .grid-item {
+            margin-bottom: 20px;
         }
+    }
+</style>
 
-        /* Hover effect */
-        .grid-item:hover img {
-            transform: scale(1.1);
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Optional: Add a slight zoom effect on click */
-        .grid-item:active img {
-            transform: scale(1.05);
-        }
-
-        /* Mobile view adjustments */
-        @media (max-width: 768px) {
-            .grid-gallery {
-                grid-template-columns: 1fr;
-            }
-
-            .grid-item {
-                margin-bottom: 20px;
-            }
-        }
-    </style>
+  
 </head>
 
 <body>
