@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="theme-color" content="#15102B">
+<title>Recall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#15102B;
+  --ink-2:#0D0919;
+  --card:#221A45;
+  --card-2:#2C2256;
+  --back:#1C1638;
+  --edge:rgba(240,236,248,.12);
+  --chalk:#F0ECF8;
+  --muted:#A79DC9;
+  --amber:#FFC24B;
+  --mint:#5FE3B0;
+  --coral:#FF7A85;
+  --pad:22px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--ink);
+  background-image:
+    radial-gradient(120% 70% at 82% -8%, rgba(255,194,75,.16), transparent 60%),
+    radial-gradient(110% 65% at 8% 104%, rgba(95,227,176,.13), transparent 62%),
+    linear-gradient(180deg,var(--ink) 0%,var(--ink-2) 100%);
+  background-attachment:fixed;
+  color:var(--chalk);
+  font-family:"Inter Tight",system-ui,-apple-system,sans-serif;
+  font-size:17px;
+  line-height:1.45;
+  overscroll-behavior:none;
+}
+#app{
+  height:100dvh;
+  max-width:640px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  padding:calc(env(safe-area-inset-top) + 14px) var(--pad) calc(env(safe-area-inset-bottom) + 18px);
+}
+
+/* ---------- rail ---------- */
+.rail{flex:0 0 auto;display:flex;flex-direction:column;gap:11px}
+.rail-meta{display:flex;justify-content:space-between;align-items:baseline;
+  font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.rail-meta b{color:var(--chalk);font-weight:500}
+.tally{display:flex;gap:3px;height:4px}
+.tally i{flex:1;border-radius:99px;background:rgba(240,236,248,.13);transition:background .35s ease,transform .35s ease}
+.tally i.hit{background:var(--mint)}
+.tally i.miss{background:var(--coral)}
+.tally i.now{background:var(--amber);transform:scaleY(2.1)}
+.rail[hidden]{display:none}
+
+/* ---------- card ---------- */
+.scene{flex:1 1 auto;perspective:1500px;margin:18px 0 0;min-height:0;display:flex}
+.card{
+  position:relative;flex:1;transform-style:preserve-3d;
+  transition:transform .68s cubic-bezier(.2,.85,.25,1);
+}
+.card.flipped{transform:rotateY(180deg)}
+.face{
+  position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  border-radius:26px;border:1px solid var(--edge);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.front{
+  background:linear-gradient(158deg,var(--card-2),var(--card) 62%,#1D1640);
+  box-shadow:0 26px 60px -26px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.07);
+  cursor:pointer;
+  padding:26px 24px 20px;
+  justify-content:center;
+}
+.back{
+  transform:rotateY(180deg);
+  background:linear-gradient(158deg,#241B49,var(--back) 70%);
+  box-shadow:0 26px 60px -26px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,255,255,.05);
+  padding:20px 18px;
+}
+
+/* ---------- front face ---------- */
+.eyebrow{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--amber);opacity:.85}
+.q{
+  font-family:"Bricolage Grotesque",serif;font-weight:800;
+  font-size:clamp(27px,7.2vw,40px);line-height:1.1;letter-spacing:-.022em;
+  margin:16px 0 0;overflow-y:auto;
+}
+.prompt{margin-top:auto;padding-top:20px;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:14.5px}
+.prompt .dot{width:7px;height:7px;border-radius:99px;background:var(--amber);animation:pulse 1.9s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1.25)}}
+
+/* ---------- back face ---------- */
+.q-small{
+  font-family:"Bricolage Grotesque",serif;font-weight:600;font-size:16.5px;line-height:1.28;
+  letter-spacing:-.01em;color:var(--muted);
+  padding:6px 8px 14px;border-bottom:1px solid var(--edge);flex:0 0 auto;
+}
+.opts{flex:1 1 auto;overflow-y:auto;display:flex;flex-direction:column;justify-content:center;gap:9px;padding:14px 2px}
+.opt{
+  display:flex;align-items:center;gap:13px;width:100%;text-align:left;
+  background:rgba(240,236,248,.045);border:1px solid var(--edge);border-radius:16px;
+  padding:15px 15px;color:var(--chalk);font:inherit;font-weight:500;font-size:16.5px;line-height:1.3;
+  cursor:pointer;transition:background .18s,border-color .18s,transform .18s,opacity .25s;
+  opacity:0;transform:translateY(9px);
+}
+.card.flipped .opt{animation:rise .42s cubic-bezier(.2,.85,.25,1) forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.opt:active{transform:scale(.985)}
+.badge{
+  flex:0 0 auto;width:27px;height:27px;border-radius:9px;display:grid;place-items:center;
+  background:rgba(240,236,248,.08);border:1px solid var(--edge);
+  font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--muted);transition:all .18s;
+}
+.opt .txt{flex:1}
+.mark{flex:0 0 auto;width:22px;height:22px;opacity:0;transform:scale(.6);transition:all .3s cubic-bezier(.2,1.5,.4,1)}
+.opt.picked .mark,.opt.reveal .mark{opacity:1;transform:none}
+.opt.hit{background:rgba(95,227,176,.14);border-color:rgba(95,227,176,.55)}
+.opt.hit .badge{background:rgba(95,227,176,.2);border-color:transparent;color:var(--mint)}
+.opt.miss{background:rgba(255,122,133,.13);border-color:rgba(255,122,133,.5)}
+.opt.miss .badge{background:rgba(255,122,133,.2);border-color:transparent;color:var(--coral)}
+.opt.dim{opacity:.34}
+.opt[disabled]{cursor:default}
+
+.verdict{
+  flex:0 0 auto;height:34px;display:flex;align-items:center;gap:9px;padding:0 8px;
+  font-family:"Bricolage Grotesque",serif;font-weight:800;font-size:19px;letter-spacing:-.01em;
+  opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s;
+}
+.verdict.show{opacity:1;transform:none}
+.verdict.good{color:var(--mint)}
+.verdict.bad{color:var(--coral)}
+.verdict small{font-family:"Inter Tight",sans-serif;font-weight:400;font-size:13px;color:var(--muted);letter-spacing:0;margin-left:auto}
+
+/* ---------- screens ---------- */
+.screen{flex:1;display:flex;flex-direction:column;justify-content:center;gap:18px;text-align:left}
+.screen h1{
+  font-family:"Bricolage Grotesque",serif;font-weight:800;letter-spacing:-.03em;
+  font-size:clamp(40px,13vw,62px);line-height:.95;margin:0;
+}
+.screen h1 em{font-style:normal;color:var(--amber)}
+.screen p{margin:0;color:var(--muted);font-size:16px;max-width:34ch}
+.btn{
+  appearance:none;border:0;border-radius:16px;padding:17px 22px;width:100%;
+  background:var(--amber);color:#221704;font:inherit;font-weight:600;font-size:17px;cursor:pointer;
+  transition:transform .15s,filter .15s;
+}
+.btn:active{transform:scale(.985)}
+.btn.ghost{background:transparent;color:var(--chalk);border:1px solid var(--edge)}
+.btn[disabled]{opacity:.4;cursor:default}
+.stack{display:flex;flex-direction:column;gap:10px}
+.toggle{display:flex;align-items:center;gap:11px;color:var(--muted);font-size:15px;cursor:pointer;padding:4px 0}
+.toggle input{appearance:none;width:42px;height:25px;border-radius:99px;background:rgba(240,236,248,.13);position:relative;transition:background .2s;cursor:pointer;margin:0}
+.toggle input:after{content:"";position:absolute;top:3px;left:3px;width:19px;height:19px;border-radius:99px;background:var(--chalk);transition:transform .22s cubic-bezier(.2,.9,.3,1)}
+.toggle input:checked{background:var(--amber)}
+.toggle input:checked:after{transform:translateX(17px);background:#221704}
+.note{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.06em;color:var(--muted);opacity:.75}
+.score{font-family:"JetBrains Mono",monospace;font-size:14px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.bigscore{font-family:"Bricolage Grotesque",serif;font-weight:800;font-size:clamp(56px,20vw,96px);line-height:.9;letter-spacing:-.04em;margin:0}
+.bigscore span{color:var(--muted);font-size:.4em}
+[hidden]{display:none !important}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  .card,.card.flipped{transform:none}
+  .card.flipped .front{visibility:hidden}
+  .front,.back{backface-visibility:visible}
+  .back{transform:none;visibility:hidden}
+  .card.flipped .back{visibility:visible}
+  .opt{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <div class="rail" id="rail" hidden>
+    <div class="rail-meta">
+      <span id="counter">01 / 01</span>
+      <span><b id="hits">0</b> correct</span>
+    </div>
+    <div class="tally" id="tally"></div>
+  </div>
+
+  <!-- start / loading / error -->
+  <section class="screen" id="start">
+    <div>
+      <h1>Recall<em>.</em></h1>
+      <p id="startMsg">Pulling questions from your sheet…</p>
+    </div>
+    <div class="stack" id="startControls" hidden>
+      <label class="toggle"><input type="checkbox" id="shuffle" checked> Shuffle the order</label>
+      <button class="btn" id="go">Start</button>
+      <span class="note" id="skipNote" hidden></span>
+    </div>
+  </section>
+
+  <!-- quiz -->
+  <div class="scene" id="scene" hidden>
+    <div class="card" id="card">
+      <div class="face front" id="front" role="button" tabindex="0" aria-label="Show the choices">
+        <span class="eyebrow" id="eyebrow">Question 1</span>
+        <h2 class="q" id="qText"></h2>
+        <div class="prompt"><span class="dot"></span> Answer it in your head, then tap</div>
+      </div>
+      <div class="face back">
+        <div class="q-small" id="qSmall"></div>
+        <div class="opts" id="opts"></div>
+        <div class="verdict" id="verdict"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- end -->
+  <section class="screen" id="end" hidden>
+    <div>
+      <span class="score" id="endLabel">Run complete</span>
+      <p class="bigscore" id="endScore"></p>
+      <p id="endMsg"></p>
+    </div>
+    <div class="stack">
+      <button class="btn" id="retry" hidden>Retry the misses</button>
+      <button class="btn ghost" id="again">Run the whole set again</button>
+    </div>
+  </section>
+
+</div>
+
+<script>
+/* ============ config ============ */
+const DEFAULT_SHEET = "1Gsvtv44uMWVUFUdrzKz60ieg7L6YhOX1mlSz1tDpOrc";
+const params = new URLSearchParams(location.search);
+const sheetId = (params.get("sheet") || DEFAULT_SHEET).match(/[a-zA-Z0-9-_]{20,}/)?.[0] || DEFAULT_SHEET;
+const tabName = params.get("tab");
+const csvUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`
+  + (tabName ? `&sheet=${encodeURIComponent(tabName)}` : "") + `&_=${Date.now()}`;
+
+/* ============ csv ============ */
+function parseCSV(text){
+  const rows=[]; let row=[], field="", q=false;
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(q){
+      if(c==='"'){ if(text[i+1]==='"'){field+='"';i++;} else q=false; }
+      else field+=c;
+    } else if(c==='"'){ q=true; }
+    else if(c===','){ row.push(field); field=""; }
+    else if(c==='\n'){ row.push(field); rows.push(row); row=[]; field=""; }
+    else if(c!=='\r'){ field+=c; }
+  }
+  row.push(field); rows.push(row);
+  return rows.filter(r=>r.some(c=>c.trim()!==""));
+}
+
+/* ============ options ============ */
+function parseOptions(raw){
+  const s=String(raw).replace(/\s+/g," ").trim();
+  if(!s) return [];
+  const re=/(^|[\s;|])([a-zA-Z0-9])\s*[\)\.\:]\s+/g;
+  const found=[]; let m;
+  while((m=re.exec(s))!==null) found.push({cut:m.index, from:m.index+m[0].length, label:m[2].toLowerCase()});
+  // keep only markers that form a run: a,b,c… or 1,2,3…
+  const marks=[]; let want=null;
+  for(const mk of found){
+    if(want===null){ want=mk.label; }
+    if(mk.label===want){ marks.push(mk); want=String.fromCharCode(want.charCodeAt(0)+1); }
+  }
+  let parts;
+  if(marks.length>=2){
+    parts=marks.map((mk,i)=> s.slice(mk.from, i+1<marks.length ? marks[i+1].cut : s.length));
+  } else {
+    parts=s.split(/\s*[;|]\s*|\s{2,}/);
+  }
+  return parts.map(p=>{
+    const t=p.trim();
+    return { text:t.replace(/\*+/g,"").replace(/[\s,;]+$/,"").trim(), correct:t.includes("*") };
+  }).filter(o=>o.text.length>0);
+}
+
+/* ============ state ============ */
+let deck=[], master=[], idx=0, hits=0, misses=[], locked=false, timer=null;
+const $=id=>document.getElementById(id);
+const shuffleArr=a=>{ for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; };
+const TICK='<svg class="mark" viewBox="0 0 24 24" fill="none" stroke="#5FE3B0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5.2 5.2L20 6.5"/></svg>';
+const CROSS='<svg class="mark" viewBox="0 0 24 24" fill="none" stroke="#FF7A85" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+/* ============ load ============ */
+(async function load(){
+  try{
+    const res=await fetch(csvUrl,{cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP "+res.status);
+    const rows=parseCSV(await res.text());
+    if(!rows.length) throw new Error("empty");
+
+    const head=rows[0].map(c=>c.trim().toLowerCase());
+    let qi=head.findIndex(h=>h==="q"||h==="question");
+    let ai=head.findIndex(h=>h==="a"||h==="answer"||h==="answers"||h==="options");
+    let body=rows.slice(1);
+    if(qi<0||ai<0){ qi=0; ai=1; body=rows; }
+
+    let skipped=0;
+    master=body.map(r=>{
+      const q=(r[qi]||"").trim(), opts=parseOptions(r[ai]||"");
+      if(!q||opts.length<2||!opts.some(o=>o.correct)){ if(q) skipped++; return null; }
+      return {q,opts};
+    }).filter(Boolean);
+
+    if(!master.length) throw new Error("no usable rows");
+
+    $("startMsg").textContent = master.length+" question"+(master.length>1?"s":"")+" ready. Say the answer out loud before you tap — the recall is what makes it stick.";
+    $("startControls").hidden=false;
+    if(skipped){ $("skipNote").hidden=false; $("skipNote").textContent=skipped+" row(s) skipped — mark the right choice with *"; }
+  }catch(err){
+    $("startMsg").textContent="The sheet didn't load. Open it in Google Sheets, choose Share → General access → Anyone with the link, then reload this page. ("+err.message+")";
+  }
+})();
+
+/* ============ run ============ */
+function begin(list){
+  deck=list.map(q=>({q:q.q, opts:shuffleArr(q.opts.slice())}));
+  if($("shuffle").checked) shuffleArr(deck);
+  idx=0; hits=0; misses=[];
+  $("start").hidden=true; $("end").hidden=true;
+  $("scene").hidden=false; $("rail").hidden=false;
+  buildTally(); show();
+}
+function buildTally(){
+  $("tally").innerHTML=deck.map(()=>"<i></i>").join("");
+}
+function show(){
+  locked=false; clearTimeout(timer);
+  const item=deck[idx];
+  $("card").classList.remove("flipped");
+  $("counter").textContent=String(idx+1).padStart(2,"0")+" / "+String(deck.length).padStart(2,"0");
+  $("hits").textContent=hits;
+  [...$("tally").children].forEach((el,i)=>{ if(!el.classList.contains("hit")&&!el.classList.contains("miss")) el.className = i===idx?"now":""; });
+  $("eyebrow").textContent="Question "+(idx+1);
+  $("qText").textContent=item.q;
+  $("qSmall").textContent=item.q;
+  $("verdict").className="verdict"; $("verdict").innerHTML="";
+  $("opts").innerHTML=item.opts.map((o,i)=>
+    `<button class="opt" data-i="${i}" style="animation-delay:${180+i*70}ms">
+       <span class="badge">${String.fromCharCode(65+i)}</span>
+       <span class="txt">${o.text.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}</span>
+       ${o.correct?TICK:CROSS}
+     </button>`).join("");
+  [...$("opts").children].forEach(b=>b.addEventListener("click",()=>choose(+b.dataset.i)));
+}
+function reveal(){
+  if($("card").classList.contains("flipped")) return;
+  $("card").classList.add("flipped");
+}
+function choose(i){
+  if(locked) return; locked=true;
+  const item=deck[idx], right=item.opts[i].correct;
+  const btns=[...$("opts").children];
+  btns.forEach((b,j)=>{
+    b.disabled=true;
+    if(j===i) b.classList.add("picked", right?"hit":"miss");
+    else if(item.opts[j].correct && !right) b.classList.add("reveal","hit");
+    else b.classList.add("dim");
+  });
+  const seg=$("tally").children[idx];
+  if(right){ hits++; seg.className="hit"; } else { misses.push(item); seg.className="miss"; }
+  $("hits").textContent=hits;
+  const v=$("verdict");
+  v.className="verdict show "+(right?"good":"bad");
+  v.innerHTML=(right?"Correct!":"Nope.")+"<small>tap to continue</small>";
+  timer=setTimeout(next, right?1250:2100);
+}
+function next(){
+  clearTimeout(timer);
+  if(!locked) return;
+  idx++;
+  if(idx>=deck.length) return finish();
+  $("card").classList.remove("flipped");
+  setTimeout(show, 320);
+}
+function finish(){
+  $("scene").hidden=true; $("rail").hidden=true; $("end").hidden=false;
+  const pct=Math.round(hits/deck.length*100);
+  $("endScore").innerHTML=hits+"<span>/"+deck.length+"</span>";
+  $("endMsg").textContent = pct===100
+    ? "Clean sweep. Come back to this set in two or three days — spacing is what turns it into long-term memory."
+    : "That's "+pct+"%. The misses are the useful part: run them again now, then again tomorrow.";
+  $("retry").hidden = misses.length===0;
+  $("retry").textContent="Retry the "+misses.length+" miss"+(misses.length>1?"es":"");
+}
+
+/* ============ events ============ */
+$("go").addEventListener("click",()=>begin(master));
+$("again").addEventListener("click",()=>begin(master));
+$("retry").addEventListener("click",()=>begin(misses.slice()));
+$("front").addEventListener("click",reveal);
+$("front").addEventListener("keydown",e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();reveal();} });
+$("verdict").addEventListener("click",next);
+document.addEventListener("keydown",e=>{
+  if($("scene").hidden) return;
+  if(locked && (e.key===" "||e.key==="Enter")){ e.preventDefault(); next(); return; }
+  if(!$("card").classList.contains("flipped")){ if(e.key===" "||e.key==="Enter"){e.preventDefault();reveal();} return; }
+  const k=e.key.toLowerCase();
+  const n=/^[1-9]$/.test(k) ? +k-1 : (/^[a-i]$/.test(k) ? k.charCodeAt(0)-97 : -1);
+  if(n>=0 && $("opts").children[n]) choose(n);
+});
+</script>
+</body>
+</html>
